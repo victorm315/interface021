@@ -130,7 +130,7 @@ def test_httpbin_get():
     
     ApiHttpbinGet().run()\
         .validate("status_code", 200)\
-        # .validate("headers.server","gunicorn/19.9.0")\
+        .validate("headers.server","gunicorn/19.9.0")\
         # .validate("json.url", "http://httpbin.org/get")
     
     
@@ -150,9 +150,8 @@ def test_httpbin_get_with_parmas():
     ApiHttpbinGet()\
         .set_parmas(abc=123,xyz=456) \
         .run() \
-        .validate("status_code", 200)
-       
-       # parmas还可以以这种方式传，这样的话-> set_parmas(self,parmas)
+        .validate("status_code", 200)\
+    # parmas还可以以这种方式传，这样的话-> set_parmas(self,parmas)
         # .set_parmas(parmas)\
 
 
@@ -173,4 +172,5 @@ def test_httpbin_post():
     ApiHttpBinPost()\
         .set_json({"xyz": 456})\
         .run()\
-        .validate("status_code", 200)
+        .validate("status_code", 200)\
+        .validate("headers.server", 'gunicorn/19.9.0')
