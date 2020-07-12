@@ -3,6 +3,7 @@
 # @Time    : 2020-07-12 11:52
 # @Author  : Mingchen.Ma
 from api import BaseApi
+from tests.api import ApiHttpbinGet, ApiHttpBinPost
 
 
 def test_version():
@@ -52,11 +53,12 @@ def test_version():
 #         return self
 
 
-class ApiHttpbinGet(BaseApi):
-    url = "http://httpbin.org/get"
-    parmas = {}
-    method = "get"
-    headers = {"accept": "application/json"}
+# class ApiHttpbinGet(BaseApi):
+    """对测试接口的定义"""
+#     url = "http://httpbin.org/get"
+#     parmas = {}
+#     method = "get"
+#     headers = {"accept": "application/json"}
     
     # def set_parmas(self, **parmas):
     #     self.parmas = parmas
@@ -87,13 +89,13 @@ class ApiHttpbinGet(BaseApi):
     #     assert actual_result == expected_value
     #     return self
 
-class ApiHttpBinPost(BaseApi):
-    url = "http://httpbin.org/post"
-    method = "post"
-    parmas = {}
-    headers = {"accept": "application/json"}
-    data = "abc=123"
-    json = {"xyz": 123}
+# class ApiHttpBinPost(BaseApi):
+#     url = "http://httpbin.org/post"
+#     method = "post"
+#     parmas = {}
+#     headers = {"accept": "application/json"}
+#     data = "abc=123"
+#     json = {"xyz": 123}
     
 
     
@@ -114,7 +116,7 @@ class ApiHttpBinPost(BaseApi):
     #     assert actual_result == expected_value
     #     return self
 
-
+# 每个函数对应一个测试用例
 
 def test_httpbin_get():
     # 1 .构造参数
