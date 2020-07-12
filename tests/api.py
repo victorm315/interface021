@@ -21,5 +21,7 @@ class ApiHttpBinPost(BaseApi):
     method = "post"
     parmas = {}
     headers = {"accept": "application/json"}
-    data = "abc=123"
+    # 在 requests里，post请求的data优先级要高于json,如果有data,就会先用
+    # data，如果没有data,采用用json, 所以在接口定义的时候，data和json就不能共存了
+    # data = "abc=123"
     json = {"xyz": 123}

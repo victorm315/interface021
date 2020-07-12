@@ -185,4 +185,31 @@ def test_httpbin_post():
         .validate("status_code", 200)\
         .validate("headers.server", 'gunicorn/19.9.0')\
         .validate("json().headers.Accept", "application/json")\
-        .validate("json.url", "http://httpbin.org/post")
+        .validate("json.url", "http://httpbin.org/post")\
+
+
+# 用户故事2 参数关联
+# test_httpbin_paraments_share是个测试用例
+def test_httpbin_paraments_share():
+    """实现参数共享,多个接口里都会用到user_id
+        美观度不好，但是已经实现了测试步骤一和测试步骤2实现参数共享的机制
+        可以在通过迭代来美观和提高灵活性
+    """
+    user_id = "adk129"
+    # 测试步骤1：get请求，获取某些信息
+    ApiHttpbinGet() \
+        .set_parmas(user_id=user_id) \
+        .run() \
+        .validate("status_code", 200) \
+        .validate("json.url", "http://httpbin.org/get?user_id={}".format(user_id)) \
+        .validate("json().headers.Accept", "application/json")
+
+    # 测试步骤2：post请求，提交数据
+    ApiHttpBinPost() \
+        .set_json({"user_id": user_id}) \
+        .run() \
+        .validate("status_code", 200) \
+        .validate("headers.server", 'gunicorn/19.9.0') \
+        .validate("json().headers.Accept", "application/json") \
+        .validate("json.url", "http://httpbin.org/post")\
+        .validate("json().json.user_id", "adk129")
