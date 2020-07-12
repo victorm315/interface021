@@ -218,9 +218,52 @@ def test_httpbin_paraments_share():
 
 def test_httpbin_extract():
     """测试提取响应值里的状态码"""
-    status_code = ApiHttpbinGet() \
-        .run() \
-        .extract("status_code")
+    
+    # status_code = ApiHttpbinGet() \
+    #     .run() \
+    #     .extract("status_code")
+    # assert status_code == 200
+    #
+    # """测试提取headers里的Server"""
+    # server = ApiHttpbinGet().run().extract("headers.server")
+    # assert server == "gunicorn/19.9.0"
+    #
+    # accept_type = ApiHttpbinGet().run().extract("json().headers.Accept")
+    # assert accept_type == "application/json"
+    
+    # 上面是从一个接口里提取了三个数据，但是接口却被请求了三次，这是不合理的
+    # 下面通过请求一次接口，然后提取数据实现
+    
+    api_run = ApiHttpbinGet().run()
+    
+    status_code = api_run.extract("status_code")
     assert status_code == 200
+
+    """测试提取headers里的Server"""
+    server = api_run.extract("headers.server")
+    assert server == "gunicorn/19.9.0"
+
+    accept_type = api_run.extract("json().headers.Accept")
+    assert accept_type == "application/json"
+    
+    
+def test_httpbin_paraments_extract():
+    """实现测试步骤之间的参数依赖
+    """
+    user_id = "adk129"
+    # 测试步骤1：get请求，获取cookie
+    ApiHttpbinGetCookies()\
+        .run()\
+        .extract("")
+
+    # 测试步骤2：post请求，提交数据
+    ApiHttpBinPost() \
+        .set_json({"user_id": user_id}) \
+        .run() \
+        .validate("status_code", 200) \
+        .validate("headers.server", 'gunicorn/19.9.0') \
+        .validate("json().headers.Accept", "application/json") \
+        .validate("json.url", "http://httpbin.org/post")\
+        .validate("json().json.user_id", "adk129")
 
 

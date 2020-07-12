@@ -39,6 +39,8 @@ class BaseApi(object):
         )
         return self
     
+
+    
     def extract(self, field):
         """提取响应中的数据"""
         """这里要先做好约定，extract后能否更validate
@@ -46,24 +48,37 @@ class BaseApi(object):
             
         """
         # todo: 对run之后可以提取，提取后可以validate提取的是否正确，问题是是否有必要这么做
-        
-        # 提取响应中的状态码
-        value = getattr(self.response, field)
-        return value
-    
-    def validate(self, key, expected_value):
-        """key是要传入的待断言字段"""
+
         value = self.response
-        for _key in key.split("."):
-            print("value----", _key, value,type(value),expected_value)
-            print("json======", _key, value)
+        for _key in field.split("."):
             if isinstance(value, requests.Response):
                 if _key in ["json()", "json"]:
                     value = self.response.json()
                 else:
                     value = getattr(value, _key)
-            elif isinstance(value, (requests.structures.CaseInsensitiveDict,dict)):
+            elif isinstance(value, (requests.structures.CaseInsensitiveDict, dict)):
                 value = value[_key]
+        
+        # 提取响应中的状态码
+        return value
+    
+    def validate(self, key, expected_value):
+        """key是要传入的待断言字段"""
+        
+        """由于在extract里也同样要用到下面的代码，因为都是从response里提取数据，
+        公共部分代码，抽离出来，单独放到extract里去"""
+        # value = self.response
+        # for _key in key.split("."):
+        #     print("value----", _key, value,type(value),expected_value)
+        #     print("json======", _key, value)
+        #     if isinstance(value, requests.Response):
+        #         if _key in ["json()", "json"]:
+        #             value = self.response.json()
+        #         else:
+        #             value = getattr(value, _key)
+        #     elif isinstance(value, (requests.structures.CaseInsensitiveDict,dict)):
+        #         value = value[_key]
         # todo : 校验异常未捕获，一旦某个校验失败，就会终止其他校验。改成可以继续执行
-        assert value == expected_value
+        actual_value = self.extract(key)
+        assert actual_value == expected_value
         return self
