@@ -3,7 +3,7 @@
 # @Time    : 2020-07-12 11:52
 # @Author  : Mingchen.Ma
 from api import BaseApi
-from tests.api import ApiHttpbinGet, ApiHttpBinPost
+from tests.api import ApiHttpbinGet, ApiHttpBinPost, ApiHttpbinGetCookies
 
 
 def test_version():
@@ -213,3 +213,14 @@ def test_httpbin_paraments_share():
         .validate("json().headers.Accept", "application/json") \
         .validate("json.url", "http://httpbin.org/post")\
         .validate("json().json.user_id", "adk129")
+    
+# 用户故事2
+
+def test_httpbin_extract():
+    """测试提取响应值里的状态码"""
+    status_code = ApiHttpbinGet() \
+        .run() \
+        .extract("status_code")
+    assert status_code == 200
+
+

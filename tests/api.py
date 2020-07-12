@@ -25,3 +25,10 @@ class ApiHttpBinPost(BaseApi):
     # data，如果没有data,采用用json, 所以在接口定义的时候，data和json就不能共存了
     # data = "abc=123"
     json = {"xyz": 123}
+    
+class ApiHttpbinGetCookies(BaseApi):
+    """获取cookie接口描述"""
+    url = "http://httpbin.org/cookies"
+    parmas = {}
+    method = "get"
+    headers = {"accept": "application/json"}

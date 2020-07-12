@@ -39,6 +39,18 @@ class BaseApi(object):
         )
         return self
     
+    def extract(self, field):
+        """提取响应中的数据"""
+        """这里要先做好约定，extract后能否更validate
+            当前约定：不可以，extract只能在最后,所以就直接return的是提取出来的值，而不是return self
+            
+        """
+        # todo: 对run之后可以提取，提取后可以validate提取的是否正确，问题是是否有必要这么做
+        
+        # 提取响应中的状态码
+        value = getattr(self.response, field)
+        return value
+    
     def validate(self, key, expected_value):
         """key是要传入的待断言字段"""
         value = self.response
