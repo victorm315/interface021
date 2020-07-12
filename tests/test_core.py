@@ -131,7 +131,13 @@ def test_httpbin_get():
     ApiHttpbinGet().run()\
         .validate("status_code", 200)\
         .validate("headers.server","gunicorn/19.9.0")\
-        # .validate("json.url", "http://httpbin.org/get")
+        .validate("json().url", "http://httpbin.org/get")\
+        .validate("json().args", {})\
+        .validate("json().headers.Accept", "application/json")\
+        .validate("json.url", "http://httpbin.org/get")
+        # 注意：因为response要转化为json格式，应该是resp.json()，但是目前validate里的
+        # 写法是 json.url,肯定是获取不到的
+        # 前期为了快速实现，就先改为json().url, todo：后期需要改成 json.url的
     
     
     
@@ -151,7 +157,9 @@ def test_httpbin_get_with_parmas():
         .set_parmas(abc=123,xyz=456) \
         .run() \
         .validate("status_code", 200)\
-    # parmas还可以以这种方式传，这样的话-> set_parmas(self,parmas)
+        .validate("json.url", "http://httpbin.org/get?abc=123&xyz=456") \
+        .validate("json().headers.Accept", "application/json")
+        # parmas还可以以这种方式传，这样的话-> set_parmas(self,parmas)
         # .set_parmas(parmas)\
 
 
@@ -173,4 +181,6 @@ def test_httpbin_post():
         .set_json({"xyz": 456})\
         .run()\
         .validate("status_code", 200)\
-        .validate("headers.server", 'gunicorn/19.9.0')
+        .validate("headers.server", 'gunicorn/19.9.0')\
+        .validate("json().headers.Accept", "application/json")\
+        .validate("json.url", "http://httpbin.org/post")
