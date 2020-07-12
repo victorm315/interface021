@@ -11,7 +11,7 @@ matrix:
 
 install:
   - pip install poetry
-  - poetry install -vvv
+  - poetry add -vvv
 
 script:
   - poetry run coverage run --source=interface021 -m pytest -v
