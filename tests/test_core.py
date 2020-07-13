@@ -3,7 +3,7 @@
 # @Time    : 2020-07-12 11:52
 # @Author  : Mingchen.Ma
 from api import BaseApi
-from tests.api import ApiHttpbinGet, ApiHttpBinPost, ApiHttpbinGetCookies
+from tests.api import ApiHttpbinGet, ApiHttpBinPost, ApiHttpbinGetCookies, ApiHttpBinGetSetCookies
 
 
 def test_version():
@@ -280,5 +280,17 @@ def test_httpbin_paraments_extract():
         .validate("json().headers.Accept", "application/json") \
         .validate("json.url", "http://httpbin.org/post")\
         .validate("json().json.freeform", freeform)
+    
 
+def test_httpbin_login_status():
+    # Step1: 类似 login and get cookie 的功能
+    ApiHttpBinGetSetCookies().set_parmas(freeform="567").run()
 
+    # Step2: Post 请求，不用再单独设置cookie，就能用Step1返回的cookie, 并且请求的header里携带着上面的cookies
+    resp = ApiHttpBinPost()\
+        .set_json({"abc":"123"})\
+        .run()\
+        .get_response()
+    # 这里获取的
+    request_headers = resp.request.headers
+    assert "freeform=567" in request_headers["Cookie"]
