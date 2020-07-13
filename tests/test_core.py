@@ -247,23 +247,36 @@ def test_httpbin_extract():
     assert accept_type == "application/json"
     
     
+def test_httpbin_setcookies():
+    """测试set cookie"""
+    api_run = ApiHttpbinGetCookies()\
+        .set_cookie("freeform1", "123")\
+        .set_cookie("freeform2", "456")\
+        .run()
+    
+    freeform1 = api_run.extract("json().cookies.freeform1")
+    freeform2 = api_run.extract("json().cookies.freeform2")
+    
+    assert freeform1 == "123"
+    assert freeform2 == "456"
+    
 def test_httpbin_paraments_extract():
     """实现测试步骤之间的参数依赖
     """
     user_id = "adk129"
     # 测试步骤1：get请求，获取cookie
-    ApiHttpbinGetCookies()\
+    freeform = ApiHttpbinGetCookies()\
         .run()\
         .extract("")
 
     # 测试步骤2：post请求，提交数据
-    ApiHttpBinPost() \
-        .set_json({"user_id": user_id}) \
-        .run() \
-        .validate("status_code", 200) \
-        .validate("headers.server", 'gunicorn/19.9.0') \
-        .validate("json().headers.Accept", "application/json") \
-        .validate("json.url", "http://httpbin.org/post")\
-        .validate("json().json.user_id", "adk129")
+    # ApiHttpBinPost() \
+    #     .set_json({"user_id": user_id}) \
+    #     .run() \
+    #     .validate("status_code", 200) \
+    #     .validate("headers.server", 'gunicorn/19.9.0') \
+    #     .validate("json().headers.Accept", "application/json") \
+    #     .validate("json.url", "http://httpbin.org/post")\
+    #     .validate("json().json.user_id", "adk129")
 
 

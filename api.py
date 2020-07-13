@@ -11,6 +11,7 @@ class BaseApi(object):
     url = ""
     parmas = {}
     headers = {}
+    cookies = {}
     data = {}
     json = {}
     
@@ -27,6 +28,10 @@ class BaseApi(object):
         self.json = json_data
         return self
     
+    def set_cookie(self, key, value):
+        self.cookies.update({key: value})
+        return self
+    
     # requests所有的方法都是基于request.request()来实现的
     def run(self):
         self.response = requests.request(
@@ -34,6 +39,7 @@ class BaseApi(object):
             url=self.url,
             params=self.parmas,
             headers=self.headers,
+            cookies = self.cookies,
             data=self.data,
             json=self.json
         )

@@ -32,3 +32,4 @@ class ApiHttpbinGetCookies(BaseApi):
     parmas = {}
     method = "get"
     headers = {"accept": "application/json"}
+    
