@@ -263,20 +263,22 @@ def test_httpbin_setcookies():
 def test_httpbin_paraments_extract():
     """实现测试步骤之间的参数依赖
     """
-    user_id = "adk129"
-    # 测试步骤1：get请求，获取cookie
+    # 测试步骤1：get请求，获取cookie,并提取
     freeform = ApiHttpbinGetCookies()\
+        .set_cookie("freeform", "123")\
         .run()\
-        .extract("")
+        .extract("json.cookies.freeform")
+    
+    assert freeform == "123"
 
-    # 测试步骤2：post请求，提交数据
-    # ApiHttpBinPost() \
-    #     .set_json({"user_id": user_id}) \
-    #     .run() \
-    #     .validate("status_code", 200) \
-    #     .validate("headers.server", 'gunicorn/19.9.0') \
-    #     .validate("json().headers.Accept", "application/json") \
-    #     .validate("json.url", "http://httpbin.org/post")\
-    #     .validate("json().json.user_id", "adk129")
+    # 测试步骤2：post请求，提交数据，并把测试步骤1里提取的数据作为参数使用
+    ApiHttpBinPost() \
+        .set_json({"freeform": freeform}) \
+        .run() \
+        .validate("status_code", 200) \
+        .validate("headers.server", 'gunicorn/19.9.0') \
+        .validate("json().headers.Accept", "application/json") \
+        .validate("json.url", "http://httpbin.org/post")\
+        .validate("json().json.freeform", freeform)
 
 
